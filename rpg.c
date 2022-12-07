@@ -1,26 +1,60 @@
+/**
+ * Descrição:
+ *      Projeto de implementação de pipes em um programa que contém mais de 1 processo
+ *      para a disciplina de Sistemas Operacionais
+ *
+ * Autoria:
+ *      Tuanne Assenço - tuanne.assenco@gmail.com
+ *      Gabriel Garcia
+ *
+ * Compilado da seguinte forma:
+ *      $ gcc -Wall rpg.c -o rpg; ./rpg
+ **/
+
 #include <stdio.h>
 
-//$ gcc -Wall rpg.c -o rpg; ./rpg
+// funções de controle de cor para visualização do usuário
+char print_pink(char *s);
+char print_yellow(char *s);
+char print_blue(char *s);
+char print_green(char *s);
+char print_green(char *s);
+char print_red(char *s);
+char print_white(char *s);
+char print_cyan(char *s);
 
+// variáveis globais para leitura e escrita para os pipes
+int readfd, writefd;
 
-int main() {
+int main()
+{
+
+  system("cls");
+
+  char option, valid_option;
+  int counter = 0,
+      descriptor, // usado para criar o processo filho pelo fork
+      pipe1[2],  // comunicação, pai -> filho jogador1
+      pipe2[2];  // comunicação, filho -> pai  jodagor2
 
   // defining variables declaration
 
-  typedef struct player_attr {
-   char class[10];
-   char race[8];
-   int live_status;
-   int power_bar;
-   } Player_attr;
+  typedef struct player_attr
+  {
+    char class[10];
+    char race[8];
+    int live_status;
+    int power_bar;
+  } Player_attr;
 
-   typedef struct attack {
+  typedef struct attack
+  {
     char attack_name[20];
     char description[200];
     int attack_pwr;
-   } Attack;
+  } Attack;
 
-   // populating data
+  // populating data
 
   char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
   char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
@@ -37,11 +71,11 @@ int main() {
   warrior_deck[8] = (Attack){.attack_name = "Undefeated Gash", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
   warrior_deck[9] = (Attack){.attack_name = "Gut Penetration", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
 
-  int i;
+  // int i;
 
-  for(i = 0; i < sizeof(warrior_deck); i++){
-    printf("%s\n%d\n%s\n\n", warrior_deck[i].attack_name, warrior_deck[i].attack_pwr, warrior_deck[i].description);
-  }
+  // for(i = 0; i < 9; i++){
+  //   printf("%s\n%d\n%s\n\n", warrior_deck[i].attack_name, warrior_deck[i].attack_pwr, warrior_deck[i].description);
+  // }
 
   Attack mage_deck[9];
   mage_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
@@ -67,26 +101,114 @@ int main() {
   assassin_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
   assassin_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
 
-//   printf("                                    .\n"
-// "                               ::. :. :      \n"
-// "                            .-:..==-==       \n"
-// "                      .:.  -:  ===*=         \n"
-// "                     .=-= =:.  -+*+ -:-      \n"
-// "                  :+++*+ .-= .++*+.=-.       \n"
-// "                 .*+++:.=+-:=*+-..:.         \n"
-// "         :--=-==++++**+**+**+------          \n"
-// "        --+*++++==++++++++****+=-:           \n"
-// "        +*+++==-=-======++++=..::            \n"
-// "       +*++==-----=---=+++**                 \n"
-// "     ==*+==--::::-:::==++**+ :-              \n"
-// "     ***+==-::::::::-==++*=  ::              \n"
-// "     *+++=-:::::::::-=++**+**=               \n"
-// "     -*++==-:::::::-=+++++=-::               \n"
-// "      -*++==------==++*+:  .                 \n"
-// "       .=*++++====+++**=                     \n"
-// "         .-+*****+**+-                       \n"
-// "             ..::..                          \n");
-// getchar();
+  Attack cleric_deck[9];
+  cleric_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+  cleric_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+  cleric_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+  cleric_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+  cleric_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+  cleric_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+  cleric_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+  cleric_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+  cleric_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+  cleric_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+  //   printf("                                    .\n"
+  // "                               ::. :. :      \n"
+  // "                            .-:..==-==       \n"
+  // "                      .:.  -:  ===*=         \n"
+  // "                     .=-= =:.  -+*+ -:-      \n"
+  // "                  :+++*+ .-= .++*+.=-.       \n"
+  // "                 .*+++:.=+-:=*+-..:.         \n"
+  // "         :--=-==++++**+**+**+------          \n"
+  // "        --+*++++==++++++++****+=-:           \n"
+  // "        +*+++==-=-======++++=..::            \n"
+  // "       +*++==-----=---=+++**                 \n"
+  // "     ==*+==--::::-:::==++**+ :-              \n"
+  // "     ***+==-::::::::-==++*=  ::              \n"
+  // "     *+++=-:::::::::-=++**+**=               \n"
+  // "     -*++==-:::::::-=+++++=-::               \n"
+  // "      -*++==------==++*+:  .                 \n"
+  // "       .=*++++====+++**=                     \n"
+  // "         .-+*****+**+-                       \n"
+  // "             ..::..                          \n");
+  // getchar();
+
+  print_blue(" ---------------------------------------------------------------------------------\n"
+             " |                              Operational System                               |\n"
+             " +-------------------------------------------------------------------------------+\n"
+             " |                                                                               |\n"
+             " |                               Game Instructions                               |\n"
+             " |                                                                               |\n"
+             " +-------------------------------------------------------------------------------+\n"
+             " |                                                                               |\n"
+             " | - You and your opponent will choose your class and race.                      |\n"
+             " |                                                                               |\n"
+             " | - Each one of you will receive a special deck with 10 power cards related     |\n"
+             " |   with the class you choosed.                                                 |\n"
+             " |                                                                               |\n"
+             " | - Both of players have initial 100 points of Life and 100 points of Power.    |\n"
+             " |                                                                               |\n"
+             " | - On your turn you will have to choose between 3 randomly cards of your deck  |\n"
+             " |   to attack your opponent. Based on how much Power you have.                  |\n"
+             " |                                                                               |\n"
+             " | - Your opponent will turn a d3 dice. If the result is:                        |\n |");
+print_yellow("     1 -> The defendor will succesfuly avoid your attack, not taking any       ");
+print_blue("|\n |");
+print_yellow("          damage.                                                              ");
+print_blue("|\n |");
+print_yellow("     2 -> The defendor will partially block your attack, receiving 50\% of      ");
+print_blue("|\n |");
+print_yellow("          full damage.                                                         ");
+print_blue("|\n |");
+print_yellow("     3 -> The defendor failed to avoid your attack, receiving full damage.     ");
+print_blue("|\n"
+             " |                                                                               |\n"
+             " ---------------------------------------------------------------------------------\n");
+
+  getchar();
 
   return 0;
+}
+
+// Funções de controle de cor para visualização do usuário
+// Recebem uma string e formatam sua cor para saída no terminal
+char print_pink(char *s)
+{
+  printf("\033[1;35m%s\033[0m", s);
+}
+
+char print_cyan(char *s)
+{
+  printf("\033[1;36m%s\033[0m", s);
+}
+
+char print_yellow(char *s)
+{
+  printf("\033[1;33m%s\033[0m", s);
+}
+
+char print_blue(char *s)
+{
+  printf("\033[1;34m%s\033[0m", s);
+}
+
+char print_green(char *s)
+{
+  printf("\033[1;32m%s\033[0m", s);
+}
+
+char print_red(char *s)
+{
+  printf("\033[1;31m%s\033[0m", s);
+}
+
+char print_white(char *s)
+{
+  printf("\033[1;29m%s\033[0m", s);
+}
+
+char print_reset(char *s)
+{
+  printf("\033[0m%s\033[0m", s);
 }
