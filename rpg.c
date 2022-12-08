@@ -12,6 +12,7 @@
  **/
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // funções de controle de cor para visualização do usuário
 char print_pink(char *s);
@@ -31,6 +32,9 @@ int main()
 
   system("cls");
 
+  void instructions();
+  void player_customization();
+
   char option, valid_option;
   int counter = 0,
       descriptor, // usado para criar o processo filho pelo fork
@@ -44,7 +48,7 @@ int main()
     char class[10];
     char race[8];
     int live_status;
-    int power_bar;
+    // int power_bar;
   } Player_attr;
 
   typedef struct attack
@@ -132,14 +136,28 @@ int main()
   // "       .=*++++====+++**=                     \n"
   // "         .-+*****+**+-                       \n"
   // "             ..::..                          \n");
-  // getchar();
 
-  print_blue(" ---------------------------------------------------------------------------------\n"
-             " |                              Operational System                               |\n"
-             " +-------------------------------------------------------------------------------+\n"
-             " |                                                                               |\n"
-             " |                               Game Instructions                               |\n"
-             " |                                                                               |\n"
+  instructions();
+  player_customization();
+
+  // if (pipe(pipe1) < 0 || pipe(pipe2) < 0)
+	// {
+	// 	print_red("\nrpg.c: Erro na chamada do pipe");
+	// 	printf("\nerror: pipe1 = %d pipe2 = %d", pipe(pipe1), pipe(pipe2));
+	// 	exit(0);
+	// }
+
+  return 0;
+}
+
+void instructions() {
+
+  print_blue(" ---------------------------------------------------------------------------------\n |");
+  print_green("                              Operational System                               ");
+  print_blue("|\n +-------------------------------------------------------------------------------+\n"
+             " |                                                                               |\n |");
+  print_green("                               Game Instructions                               ");
+  print_blue("|\n |                                                                               |\n"
              " +-------------------------------------------------------------------------------+\n"
              " |                                                                               |\n"
              " | - You and your opponent will choose your class and race.                      |\n"
@@ -164,12 +182,40 @@ print_blue("|\n |");
 print_yellow("     3 -> The defendor failed to avoid your attack, receiving full damage.     ");
 print_blue("|\n"
              " |                                                                               |\n"
+             " | - Win who kills the opponent first!                                           |\n"
              " ---------------------------------------------------------------------------------\n");
 
-  getchar();
+ print_green("\n\nPress any key to continue...\n");
 
-  return 0;
+  getchar();
+  fflush(stdin);
 }
+
+void player_customization() {
+  int opt;
+  int valid_option = 1;
+
+  system("cls");
+  print_blue(" Choose your class by its number: \n\n");
+  print_yellow("  1) Warrior\n");
+  print_cyan("  2) Mage\n");
+  print_red("  3) Assassin\n");
+  print_green("  4) Cleric\n\n");
+
+  while(valid_option) {
+    printf("Your choice: ");
+    scanf("%d", &opt);
+    switch(opt) {
+      case 1: print_yellow("\nYou choose to be a Warrior!"); valid_option = 0; break;
+      case 2: print_cyan("\nYou choose to be a Mage!"); valid_option = 0; break;
+      case 3: print_red("\nYou choose to be an Assassin!"); valid_option = 0; break;
+      case 4: print_green("\nYou choose to be a Cleric!"); valid_option = 0; break;
+      default: print_blue("\nPlease insert a valid option. Press 'Enter' to continue.\n\n"); break;
+   }
+   fflush(stdin);
+   getchar();
+  }
+ }
 
 // Funções de controle de cor para visualização do usuário
 // Recebem uma string e formatam sua cor para saída no terminal
