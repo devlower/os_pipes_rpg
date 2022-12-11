@@ -13,6 +13,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 // VERIFICA O SISTEMA OPERACIONAL PARA SUBSTITUIR FUNÇÕES DE LIMPEZA DE TELA, BUFFER E SLEEP
 #if defined(__MINGW32__) || defined(_MSC_VER)
@@ -39,9 +41,12 @@ void print_red(char *s);
 void print_white(char *s);
 void print_cyan(char *s);
 
-// variáveis globais para leitura e escrita para os pipes
-int readfd, writefd, tmp;
-
+typedef struct attack
+  {
+    char attack_name[20];
+    char description[200];
+    int attack_pwr;
+  } Attack;
 
 int main()
 {
@@ -49,13 +54,13 @@ int main()
   //system("clear");
 
   void instructions();
-  void player_customization_race();
-  void player_customization_class();
+  int player_customization_race();
+  int player_customization_class();
+  int player_customization_player_1(int readfd, int writefd);
+  int player_customization_player_2(int readfd, int writefd);
 
 
-  char option, valid_option;
-  int counter = 0,
-      descriptor, // usado para criar o processo filho pelo fork
+  int descriptor, // usado para criar o processo filho pelo fork
       pipe1[2],  // comunicação, pai -> filho jogador1
       pipe2[2];  // comunicação, filho -> pai  jodagor2
 
@@ -67,19 +72,16 @@ int main()
     // int power_bar;
   } Player_attr;
 
-  typedef struct attack
-  {
-    char attack_name[20];
-    char description[200];
-    int attack_pwr;
-  } Attack;
+  int attack_move(Attack player_attack[10]);
 
   // populating data
 
   char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
   char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
 
-Attack warrior_deck[9];
+  
+
+Attack warrior_deck[10];
   warrior_deck[0] = (Attack){.attack_name = "Blade of Revenge", .attack_pwr = 10, .description = "Blade of Revenge will cut your opponent with bitter power."};
   warrior_deck[1] = (Attack){.attack_name = "Ancient Sharp Fury", .attack_pwr = 13, .description = "Ancient Sharp Fury will use power of your ancestors to cut your enemy."};
   warrior_deck[2] = (Attack){.attack_name = "Indulgent Sword", .attack_pwr = 9, .description = "Indulgent Sword will graciously hit your enemy."};
@@ -93,11 +95,11 @@ Attack warrior_deck[9];
 
   // int i;
 
-  // for(i = 0; i < 9; i++){
+  // for(i = 0; i < 10; i++){
   //   printf("%s\n%d\n%s\n\n", warrior_deck[i].attack_name, warrior_deck[i].attack_pwr, warrior_deck[i].description);
   // }
 
-  Attack mage_deck[9];
+  Attack mage_deck[10];
   mage_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
   mage_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
   mage_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
@@ -109,7 +111,7 @@ Attack warrior_deck[9];
   mage_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
   mage_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
 
-  Attack assassin_deck[9];
+  Attack assassin_deck[10];
   assassin_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
   assassin_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
   assassin_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
@@ -121,7 +123,7 @@ Attack warrior_deck[9];
   assassin_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
   assassin_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
 
-  Attack cleric_deck[9];
+  Attack cleric_deck[10];
   cleric_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
   cleric_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
   cleric_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
@@ -154,11 +156,14 @@ Attack warrior_deck[9];
   // "         .-+*****+**+-                       \n"
   // "             ..::..                          \n");
 
+  
+
   getchar();
 
+  
   instructions();
 
-
+  /*
   if (pipe(pipe1) < 0 || pipe(pipe2) < 0)
 	{
 		print_red("\nrpg.c: Erro na chamada do pipe");
@@ -177,6 +182,7 @@ Attack warrior_deck[9];
     close(pipe2[1]);          // Fecha escrita no pipe2
 
     player_customization_player_1(pipe2[0], pipe1[1]);
+    printf("fim processo 1 de novo");
 
     close(pipe1[1]); // fecha escrita pipe1
 		close(pipe2[0]); // fecha leitura pipe2
@@ -186,12 +192,50 @@ Attack warrior_deck[9];
     close(pipe1[1]); // fecha escrita no pipe1
 		close(pipe2[0]); // fecha leitura no pipe2
 
-		player_customization_player_2(pipe1[0], pipe2[1]); //
+    player_customization_player_2(pipe1[0], pipe2[1]); //
+    printf("fim processo 2 de novo");
 
 		close(pipe1[0]); // fecha leitura no pipe1
 		close(pipe2[1]);
 
-  }
+
+    fflush(stdout);
+    printf("Teve bom!");
+
+  } */
+
+  // TESTES EM WINDOWS:
+
+  int player_race_index = player_customization_race();
+  int player_class_index = player_customization_class();
+  int damage;
+
+  Player_attr player_1;
+  strcpy(player_1.race, races_opt[player_race_index]);
+  strcpy(player_1.class, classes_opt[player_class_index]);
+  player_1.live_status = 100;
+
+printf("race: %s\nclass: %s\nlife: %d", player_1.race, player_1.class, player_1.live_status);
+
+switch (player_class_index)
+{
+case 1:
+  damage = attack_move(warrior_deck);
+  break;
+case 2:
+  damage = attack_move(mage_deck);
+  break;
+case 3:
+  damage = attack_move(assassin_deck);
+  break;
+case 4:
+  damage = attack_move(cleric_deck);
+  break;
+default:
+  break;
+}
+
+printf("\n\nDamage: %d", damage);
 
   return 0;
 }
@@ -217,15 +261,15 @@ void instructions() {
              " |   to attack your opponent. Based on how much Power you have.                  |\n"
              " |                                                                               |\n"
              " | - Your opponent will turn a d3 dice. If the result is:                        |\n |");
-print_yellow("     1 -> The defendor will succesfuly avoid your attack, not taking any       ");
+print_yellow("     1 -> The defender will succesfully avoid your attack, not taking any       ");
 print_blue("|\n |");
 print_yellow("          damage.                                                              ");
 print_blue("|\n |");
-print_yellow("     2 -> The defendor will partially block your attack, receiving 50\% of      ");
+print_yellow("     2 -> The defender will partially block your attack, receiving 50\% of      ");
 print_blue("|\n |");
 print_yellow("          full damage.                                                         ");
 print_blue("|\n |");
-print_yellow("     3 -> The defendor failed to avoid your attack, receiving full damage.     ");
+print_yellow("     3 -> The defender failed to avoid your attack, receiving full damage.     ");
 print_blue("|\n"
              " |                                                                               |\n"
              " | - Win who kills the opponent first!                                           |\n"
@@ -237,7 +281,7 @@ print_blue("|\n"
   fflush(stdout);
 }
 
-void player_customization_race() {
+int player_customization_race() {
   int opt, valid_option = 1;
 
   //system("clear");
@@ -253,15 +297,17 @@ void player_customization_race() {
       case 1: print_blue("\n You choose to be a Human!\n"); valid_option = 0; break;
       case 2: print_blue("\n You choose to be an Elf!\n"); valid_option = 0; break;
       case 3: print_blue("\n You choose to be a Dwarf!\n"); valid_option = 0; break;
-      default: print_red("\n\n Please insert a valid oprion.\n\n"); break;
+      default: print_red("\n\n Please insert a valid option.\n\n"); break;
     }
   }
 
     fflush(stdout);
     getchar();
+
+    return opt;
 }
 
-void player_customization_class() {
+int player_customization_class() {
   int opt;
   int valid_option = 1;
 
@@ -286,42 +332,77 @@ void player_customization_class() {
 
   fflush(stdout);
   getchar();
+
+  return opt;
  }
 
- player_customization_player_1(readfd, writefd) {
-
-  int tpm;
+ int player_customization_player_1(readfd, writefd) {
 
     print_green("\n Process 1: Player 1  Customization...\n\n");
-    getchar();
 
     player_customization_race();
     getchar();
-    player_customization_class();
+    int a = player_customization_class();
     getchar();
 
-    tmp = 1;
-    write(writefd, tmp, 10);
-    printf(" ... fim do Processo 1\n\n");
+    write(writefd);
+    printf(" ...fim do Processo 1\n\n");
+    printf("A classe do Jogador 1 e: %d", a);
+    return(0);
 
  }
 
- player_customization_player_2(readfd, writefd) {
+ int player_customization_player_2(readfd, writefd) {
 
-  int  tmp;
+    read(readfd);
 
-    read(readfd, tmp, 10);
+    fflush(stdout);
 
     print_green("\n Process 2: Player 2 Customization...\n\n");
-    getchar();
 
     player_customization_race();
     getchar();
-    player_customization_class();
+    int a = player_customization_class();
     getchar();
 
-    printf(" ... fim do Processo 2\n\n");
+    printf(" ...fim do Processo 2.\n\n");
+    printf("A classe do Jogador 2 e: %d", a);
+    return (0);
+ }
 
+ int attack_move(Attack player_attack[10]) {
+    int lower = 0, upper = 9, count = 3, attacks[3], opt;
+
+    srand(time(0));
+
+    for(int i = 0; i < count; i++) {
+      attacks[i] = (rand() % (upper - lower + 1)) + lower;
+      printf("\n\n%d\n", attacks[i]);
+    }
+
+    Attack attack1 = player_attack[attacks[0]];
+    Attack attack2 = player_attack[attacks[1]];
+    Attack attack3 = player_attack[attacks[2]];
+
+    print_blue(" Choose your move by its number:\n\n");
+        printf(" 1) %s - Damage points: %d\n\tDescription: %s\n\n"
+               " 2) %s - Damage points: %d\n\tDescription: %s\n\n"
+               " 3) %s - Damage points: %d\n\tDescription: %s\n\n", attack1.attack_name, attack1.attack_pwr, attack1.description, attack2.attack_name, attack2.attack_pwr, attack2.description, attack3.attack_name, attack3.attack_pwr, attack3.description);
+
+    while(1) {
+      scanf("%d", &opt);
+      switch (opt) {
+            case 1:
+              return attack1.attack_pwr;
+            case 2:
+              return attack2.attack_pwr;
+            case 3:
+              return attack3.attack_pwr;
+            default:
+              print_red("Please insert a valid attack...\n\n");
+              break;
+      }
+    }
  }
 
 // Funções de controle de cor para visualização do usuário
