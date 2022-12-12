@@ -41,36 +41,20 @@ void print_red(char *s);
 void print_white(char *s);
 void print_cyan(char *s);
 
-typedef struct attack
-  {
-    char attack_name[20];
-    char description[200];
-    int attack_pwr;
-  } Attack;
-
-int main()
-{
-
-  //system("clear");
-
-  void instructions();
-  int player_customization_race();
-  int player_customization_class();
-  int player_customization_player_1(int readfd, int writefd);
-  int player_customization_player_2(int readfd, int writefd);
-
-
-  int descriptor, // usado para criar o processo filho pelo fork
-      pipe1[2],  // comunicação, pai -> filho jogador1
-      pipe2[2];  // comunicação, filho -> pai  jodagor2
-
-  typedef struct player_attr
+typedef struct player_attr
   {
     char class[10];
     char race[8];
     float live_status;
     // int power_bar;
   } Player_attr;
+
+typedef struct attack
+  {
+    char attack_name[20];
+    char description[200];
+    int attack_pwr;
+  } Attack;
 
   int attack_move(Attack player_attack[10]);
   float defense_move(int damage);
@@ -80,62 +64,21 @@ int main()
   char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
   char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
 
+int main()
+{
+
+  //system("clear");
+
+  void instructions();
+  int player_customization_race();
+  int player_customization_class();
+  int player_1(int readfd, int writefd);
+  int player_2(int readfd, int writefd);
 
 
-Attack warrior_deck[10];
-  warrior_deck[0] = (Attack){.attack_name = "Blade of Revenge", .attack_pwr = 10, .description = "Blade of Revenge will cut your opponent with bitter power."};
-  warrior_deck[1] = (Attack){.attack_name = "Ancient Sharp Fury", .attack_pwr = 13, .description = "Ancient Sharp Fury will use power of your ancestors to cut your enemy."};
-  warrior_deck[2] = (Attack){.attack_name = "Indulgent Sword", .attack_pwr = 9, .description = "Indulgent Sword will graciously hit your enemy."};
-  warrior_deck[3] = (Attack){.attack_name = "Balanced Swing", .attack_pwr = 3, .description = "Balanced Swing will "};
-  warrior_deck[4] = (Attack){.attack_name = "Loyal Stab", .attack_pwr = 6, .description = "Eu magna anim id ea."};
-  warrior_deck[5] = (Attack){.attack_name = "Light Saber", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
-  warrior_deck[6] = (Attack){.attack_name = "Blood Thirst", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
-  warrior_deck[7] = (Attack){.attack_name = "Honorable Laceration", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
-  warrior_deck[8] = (Attack){.attack_name = "Undefeated Gash", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
-  warrior_deck[9] = (Attack){.attack_name = "Gut Penetration", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
-
-  // int i;
-
-  // for(i = 0; i < 10; i++){
-  //   printf("%s\n%d\n%s\n\n", warrior_deck[i].attack_name, warrior_deck[i].attack_pwr, warrior_deck[i].description);
-  // }
-
-  Attack mage_deck[10];
-  mage_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
-  mage_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
-  mage_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
-  mage_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
-  mage_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
-  mage_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
-  mage_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
-  mage_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
-  mage_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
-  mage_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
-
-  Attack assassin_deck[10];
-  assassin_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
-  assassin_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
-  assassin_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
-  assassin_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
-  assassin_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
-  assassin_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
-  assassin_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
-  assassin_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
-  assassin_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
-  assassin_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
-
-  Attack cleric_deck[10];
-  cleric_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
-  cleric_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
-  cleric_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
-  cleric_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
-  cleric_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
-  cleric_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
-  cleric_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
-  cleric_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
-  cleric_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
-  cleric_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
-
+  int descriptor, // usado para criar o processo filho pelo fork
+      pipe1[2],  // comunicação, pai -> filho jogador1
+      pipe2[2];  // comunicação, filho -> pai  jodagor2
 
   getchar();
 
@@ -160,8 +103,7 @@ Attack warrior_deck[10];
     close(pipe1[0]);          // Fecha leitura no pipe1
     close(pipe2[1]);          // Fecha escrita no pipe2
 
-    player_customization_player_1(pipe2[0], pipe1[1]);
-    printf("fim processo 1 de novo");
+    player_1(pipe2[0], pipe1[1]);
 
     close(pipe1[1]); // fecha escrita pipe1
 		close(pipe2[0]); // fecha leitura pipe2
@@ -171,11 +113,10 @@ Attack warrior_deck[10];
     close(pipe1[1]); // fecha escrita no pipe1
 		close(pipe2[0]); // fecha leitura no pipe2
 
-    player_customization_player_2(pipe1[0], pipe2[1]); //
-    printf("fim processo 2 de novo");
+    player_2(pipe1[0], pipe2[1]); //
 
 		close(pipe1[0]); // fecha leitura no pipe1
-		close(pipe2[1]);
+		close(pipe2[1]); // fecha escrita no pipe1
 
 
     fflush(stdout);
@@ -183,51 +124,6 @@ Attack warrior_deck[10];
     getchar();
 
   }
-
-  // TESTES EM WINDOWS:
-
-//   int player_race_index = player_customization_race();
-//   int player_class_index = player_customization_class();
-//   int damage;
-
-//   Player_attr player_1;
-//   strcpy(player_1.race, races_opt[player_race_index - 1]);
-//   strcpy(player_1.class, classes_opt[player_class_index - 1]);
-//   player_1.live_status = 100;
-
-// printf("race: %s\nclass: %s\nlife: %.2f", player_1.race, player_1.class, player_1.live_status);
-
-// while(player_1.live_status > 0) {
-//   switch (player_class_index)
-// {
-// case 1:
-//   damage = attack_move(warrior_deck);
-//   break;
-// case 2:
-//   damage = attack_move(mage_deck);
-//   break;
-// case 3:
-//   damage = attack_move(assassin_deck);
-//   break;
-// case 4:
-//   damage = attack_move(cleric_deck);
-//   break;
-// default:
-//   break;
-// }
-
-// printf("\n\nDamage: %d", damage);
-
-//  float damage_took;
-
-//  damage_took = defense_move(damage);
-
-//  printf("You took %.2f of damage", damage_took);
-
-// player_1.live_status -= damage_took;
-
-// printf("Your life bar: %.2f", player_1.live_status);
-// }
 
   return 0;
 }
@@ -329,34 +225,263 @@ int player_customization_class() {
   return opt;
  }
 
- int player_customization_player_1(readfd, writefd) {
+ int player_1(readfd, writefd) {
 
-    print_green("\n Process 1: Player 1  Customization...\n\n");
+  int end_game = 0;
 
-    player_customization_race();
-    int a = player_customization_class();
+    Attack warrior_deck[10];
+    warrior_deck[0] = (Attack){.attack_name = "Blade of Revenge", .attack_pwr = 10, .description = "Blade of Revenge will cut your opponent with bitter power."};
+    warrior_deck[1] = (Attack){.attack_name = "Ancient Sharp Fury", .attack_pwr = 13, .description = "Ancient Sharp Fury will use power of your ancestors to cut your enemy."};
+    warrior_deck[2] = (Attack){.attack_name = "Indulgent Sword", .attack_pwr = 9, .description = "Indulgent Sword will graciously hit your enemy."};
+    warrior_deck[3] = (Attack){.attack_name = "Balanced Swing", .attack_pwr = 3, .description = "Balanced Swing will "};
+    warrior_deck[4] = (Attack){.attack_name = "Loyal Stab", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    warrior_deck[5] = (Attack){.attack_name = "Light Saber", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    warrior_deck[6] = (Attack){.attack_name = "Blood Thirst", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    warrior_deck[7] = (Attack){.attack_name = "Honorable Laceration", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    warrior_deck[8] = (Attack){.attack_name = "Undefeated Gash", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    warrior_deck[9] = (Attack){.attack_name = "Gut Penetration", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack mage_deck[10];
+    mage_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    mage_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    mage_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    mage_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    mage_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    mage_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    mage_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    mage_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    mage_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    mage_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack assassin_deck[10];
+    assassin_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    assassin_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    assassin_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    assassin_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    assassin_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    assassin_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    assassin_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    assassin_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    assassin_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    assassin_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack cleric_deck[10];
+    cleric_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    cleric_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    cleric_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    cleric_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    cleric_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    cleric_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    cleric_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    cleric_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    cleric_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    cleric_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    print_green("\n Process 1: Player 1 - Customization...\n\n");
+
+    int player_race_index = player_customization_race();
+    int player_class_index = player_customization_class();
 
     write(writefd);
-    printf(" ...fim do Processo 1\n\n");
-    printf("A classe do Jogador 1 e: %d", a);
-
-    return(0);
-
- }
-
- int player_customization_player_2(readfd, writefd) {
 
     read(readfd);
 
+    print_green("\n Process 1: Player 1 - Attack time!\n\n");
+
+    int damage;
+
+    Player_attr player_1;
+    strcpy(player_1.race, races_opt[player_race_index - 1]);
+    strcpy(player_1.class, classes_opt[player_class_index - 1]);
+    player_1.live_status = 100;
+
+    printf("race: %s\nclass: %s\nlife: %.2f", player_1.race, player_1.class, player_1.live_status);
+
+    while(player_1.live_status > 0 || end_game == 1) {
+      switch (player_class_index)
+    {
+    case 1:
+      damage = attack_move(warrior_deck);
+      break;
+    case 2:
+      damage = attack_move(mage_deck);
+      break;
+    case 3:
+      damage = attack_move(assassin_deck);
+      break;
+    case 4:
+      damage = attack_move(cleric_deck);
+      break;
+    default:
+      break;
+    }
+
+    printf("\n\nDamage: %d", damage);
+
+    write(writefd, damage, end_game);
+
+    read(readfd, damage, end_game);
+
+    if(end_game == 1) {
+        continue;
+      }
+
+      print_green("\n Process 1: Player 1 - Defense time!\n\n");
+
+      float damage_took;
+
+      printf("Player 2 Attributs:\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_2.race, player_2.class, player_2.live_status);
+
+      damage_took = defense_move(damage);
+
+      printf("You took %.2f of damage", damage_took);
+
+      player_1.live_status -= damage_took;
+
+      printf("\n\n Your life bar: %.2f", player_1.live_status);
+
+      if (player_1.live_status < 0){
+        end_game = 1;
+        damage = 0;
+        write(writefd, damage, end_game);
+        break;
+      }
+    }
+
+    if(player_1.live_status > 0) {
+      printf("\n\n PLAYER 1 WIN");
+    }
+
+  printf(" ...fim do Processo 1\n\n");
+
+  return(0);
+  }
+
+ int player_2(readfd, writefd) {
+    int end_game = 0;
+
+  Attack warrior_deck[10];
+    warrior_deck[0] = (Attack){.attack_name = "Blade of Revenge", .attack_pwr = 10, .description = "Blade of Revenge will cut your opponent with bitter power."};
+    warrior_deck[1] = (Attack){.attack_name = "Ancient Sharp Fury", .attack_pwr = 13, .description = "Ancient Sharp Fury will use power of your ancestors to cut your enemy."};
+    warrior_deck[2] = (Attack){.attack_name = "Indulgent Sword", .attack_pwr = 9, .description = "Indulgent Sword will graciously hit your enemy."};
+    warrior_deck[3] = (Attack){.attack_name = "Balanced Swing", .attack_pwr = 3, .description = "Balanced Swing will "};
+    warrior_deck[4] = (Attack){.attack_name = "Loyal Stab", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    warrior_deck[5] = (Attack){.attack_name = "Light Saber", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    warrior_deck[6] = (Attack){.attack_name = "Blood Thirst", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    warrior_deck[7] = (Attack){.attack_name = "Honorable Laceration", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    warrior_deck[8] = (Attack){.attack_name = "Undefeated Gash", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    warrior_deck[9] = (Attack){.attack_name = "Gut Penetration", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack mage_deck[10];
+    mage_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    mage_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    mage_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    mage_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    mage_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    mage_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    mage_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    mage_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    mage_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    mage_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack assassin_deck[10];
+    assassin_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    assassin_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    assassin_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    assassin_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    assassin_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    assassin_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    assassin_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    assassin_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    assassin_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    assassin_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    Attack cleric_deck[10];
+    cleric_deck[0] = (Attack){.attack_name = "Fire Ball", .attack_pwr = 10, .description = "Esse ea excepteur exercitation qui Lorem culpa est irure fugiat fugiat non quis sunt."};
+    cleric_deck[1] = (Attack){.attack_name = "Ignite Flames", .attack_pwr = 13, .description = "Culpa anim ad minim sit pariatur dolor."};
+    cleric_deck[2] = (Attack){.attack_name = "Ice Blast", .attack_pwr = 9, .description = "Est ad aute consequat nostrud."};
+    cleric_deck[3] = (Attack){.attack_name = "Earth Quack", .attack_pwr = 3, .description = "Fugiat magna adipisicing dolore veniam eiusmod quis aute velit fugiat."};
+    cleric_deck[4] = (Attack){.attack_name = "Air Frost", .attack_pwr = 6, .description = "Eu magna anim id ea."};
+    cleric_deck[5] = (Attack){.attack_name = "Sharp Wind", .attack_pwr = 4, .description = "Ad deserunt minim anim irure sint enim esse elit culpa velit amet ipsum."};
+    cleric_deck[6] = (Attack){.attack_name = "Water Ball", .attack_pwr = 7, .description = "Quis et adipisicing aliqua ex anim non pariatur."};
+    cleric_deck[7] = (Attack){.attack_name = "Steamy Air", .attack_pwr = 5, .description = "Cillum ut dolor incididunt enim."};
+    cleric_deck[8] = (Attack){.attack_name = "Flying Rocks", .attack_pwr = 8, .description = "Dolor duis adipisicing elit aute pariatur laboris et ex magna reprehenderit tempor fugiat officia."};
+    cleric_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
+
+    read(readfd);
+
+    int damage;
+
     print_green("\n Process 2: Player 2 Customization...\n\n");
 
-    fflush(stdout);
-    player_customization_race();
-    fflush(stdout);
-    int a = player_customization_class();
+    int player_race_index = player_customization_race();
+    int player_class_index = player_customization_class();
+
+    Player_attr player_2;
+    strcpy(player_2.race, races_opt[player_race_index - 1]);
+    strcpy(player_2.class, classes_opt[player_class_index - 1]);
+    player_2.live_status = 100;
+
+    write(writefd);
+
+    while(player_2.live_status > 0 || end_game == 1){
+      read(readfd, damage, end_game);
+
+      if(end_game == 1) {
+        continue;
+      }
+
+      print_green("\n Process 2: Player 2 - Defense time!\n\n");
+
+      float damage_took;
+
+      printf("Player 2 Attributs:\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_2.race, player_2.class, player_2.live_status);
+
+      damage_took = defense_move(damage);
+
+      printf("You took %.2f of damage", damage_took);
+
+      player_2.live_status -= damage_took;
+
+      printf("\n\n Your life bar: %.2f", player_2.live_status);
+
+      if (player_2.live_status < 0){
+        end_game = 1;
+        damage = 0;
+        write(writefd, damage, end_game);
+        break;
+      }
+
+      print_green("\n Process 2: Player 2 - Attack time!\n\n");
+
+      switch (player_class_index)
+          {
+          case 1:
+            damage = attack_move(warrior_deck);
+            break;
+          case 2:
+            damage = attack_move(mage_deck);
+            break;
+          case 3:
+            damage = attack_move(assassin_deck);
+            break;
+          case 4:
+            damage = attack_move(cleric_deck);
+            break;
+          default:
+            break;
+          }
+
+      printf("\n\nDamage: %d", damage);
+
+      write(writefd, damage, end_game);
+    }
+
+    if(player_2.live_status > 0) {
+        printf("\n\nPLAYER 2 WIN!\n\n");
+    }
 
     printf(" ...fim do Processo 2.\n\n");
-    printf("A classe do Jogador 2 e: %d", a);
 
     return (0);
  }
