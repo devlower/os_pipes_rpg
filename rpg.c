@@ -80,7 +80,7 @@ int main()
   char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
   char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
 
-  
+
 
 Attack warrior_deck[10];
   warrior_deck[0] = (Attack){.attack_name = "Blade of Revenge", .attack_pwr = 10, .description = "Blade of Revenge will cut your opponent with bitter power."};
@@ -137,34 +137,12 @@ Attack warrior_deck[10];
   cleric_deck[9] = (Attack){.attack_name = "Wizard's Power", .attack_pwr = 15, .description = "Proident sint in sit velit sit ad ea eiusmod eu exercitation qui."};
 
 
-  //   printf("                                    .\n"
-  // "                               ::. :. :      \n"
-  // "                            .-:..==-==       \n"
-  // "                      .:.  -:  ===*=         \n"
-  // "                     .=-= =:.  -+*+ -:-      \n"
-  // "                  :+++*+ .-= .++*+.=-.       \n"
-  // "                 .*+++:.=+-:=*+-..:.         \n"
-  // "         :--=-==++++**+**+**+------          \n"
-  // "        --+*++++==++++++++****+=-:           \n"
-  // "        +*+++==-=-======++++=..::            \n"
-  // "       +*++==-----=---=+++**                 \n"
-  // "     ==*+==--::::-:::==++**+ :-              \n"
-  // "     ***+==-::::::::-==++*=  ::              \n"
-  // "     *+++=-:::::::::-=++**+**=               \n"
-  // "     -*++==-:::::::-=+++++=-::               \n"
-  // "      -*++==------==++*+:  .                 \n"
-  // "       .=*++++====+++**=                     \n"
-  // "         .-+*****+**+-                       \n"
-  // "             ..::..                          \n");
-
-  
-
   getchar();
 
-  
+
   instructions();
 
-  /*
+
   if (pipe(pipe1) < 0 || pipe(pipe2) < 0)
 	{
 		print_red("\nrpg.c: Erro na chamada do pipe");
@@ -202,53 +180,54 @@ Attack warrior_deck[10];
 
     fflush(stdout);
     printf("Teve bom!");
+    getchar();
 
-  } */
+  }
 
   // TESTES EM WINDOWS:
 
-  int player_race_index = player_customization_race();
-  int player_class_index = player_customization_class();
-  int damage;
+//   int player_race_index = player_customization_race();
+//   int player_class_index = player_customization_class();
+//   int damage;
 
-  Player_attr player_1;
-  strcpy(player_1.race, races_opt[player_race_index - 1]);
-  strcpy(player_1.class, classes_opt[player_class_index - 1]);
-  player_1.live_status = 100;
+//   Player_attr player_1;
+//   strcpy(player_1.race, races_opt[player_race_index - 1]);
+//   strcpy(player_1.class, classes_opt[player_class_index - 1]);
+//   player_1.live_status = 100;
 
-printf("race: %s\nclass: %s\nlife: %.2f", player_1.race, player_1.class, player_1.live_status);
+// printf("race: %s\nclass: %s\nlife: %.2f", player_1.race, player_1.class, player_1.live_status);
 
-while(player_1.live_status > 0) {
-  switch (player_class_index)
-{
-case 1:
-  damage = attack_move(warrior_deck);
-  break;
-case 2:
-  damage = attack_move(mage_deck);
-  break;
-case 3:
-  damage = attack_move(assassin_deck);
-  break;
-case 4:
-  damage = attack_move(cleric_deck);
-  break;
-default:
-  break;
-}
+// while(player_1.live_status > 0) {
+//   switch (player_class_index)
+// {
+// case 1:
+//   damage = attack_move(warrior_deck);
+//   break;
+// case 2:
+//   damage = attack_move(mage_deck);
+//   break;
+// case 3:
+//   damage = attack_move(assassin_deck);
+//   break;
+// case 4:
+//   damage = attack_move(cleric_deck);
+//   break;
+// default:
+//   break;
+// }
 
-printf("\n\nDamage: %d", damage);
+// printf("\n\nDamage: %d", damage);
 
- float damage_took;
+//  float damage_took;
 
- damage_took = defense_move(damage);
+//  damage_took = defense_move(damage);
 
- printf("You took %.2f of damage", damage_took);
+//  printf("You took %.2f of damage", damage_took);
 
-player_1.live_status -= damage_took;
+// player_1.live_status -= damage_took;
 
-printf("Your life bar: %.2f", player_1.live_status);
-}
+// printf("Your life bar: %.2f", player_1.live_status);
+// }
 
   return 0;
 }
@@ -303,6 +282,7 @@ int player_customization_race() {
              " 2) Elf\n"
              " 3) Dwarf\n\n");
 
+  fflush(stdout);
   while(valid_option) {
     printf(" Your choice: ");
     scanf("%d", &opt);
@@ -314,15 +294,14 @@ int player_customization_race() {
     }
   }
 
-    fflush(stdout);
-    getchar();
+
+    // getchar();
 
     return opt;
 }
 
 int player_customization_class() {
-  int opt;
-  int valid_option = 1;
+  int opt, valid_option = 1;
 
   //system("clear");
   print_blue(" Choose your class by its number: \n\n");
@@ -331,6 +310,7 @@ int player_customization_class() {
   print_red("  3) Assassin\n");
   print_green("  4) Cleric\n\n");
 
+  fflush(stdout);
   while(valid_option) {
     printf(" Your choice: ");
     scanf("%d", &opt);
@@ -343,8 +323,8 @@ int player_customization_class() {
     }
   }
 
-  fflush(stdout);
-  getchar();
+  // fflush(stdout);
+  // getchar();
 
   return opt;
  }
@@ -354,13 +334,12 @@ int player_customization_class() {
     print_green("\n Process 1: Player 1  Customization...\n\n");
 
     player_customization_race();
-    getchar();
     int a = player_customization_class();
-    getchar();
 
     write(writefd);
     printf(" ...fim do Processo 1\n\n");
     printf("A classe do Jogador 1 e: %d", a);
+
     return(0);
 
  }
@@ -369,17 +348,16 @@ int player_customization_class() {
 
     read(readfd);
 
-    fflush(stdout);
-
     print_green("\n Process 2: Player 2 Customization...\n\n");
 
+    fflush(stdout);
     player_customization_race();
-    getchar();
+    fflush(stdout);
     int a = player_customization_class();
-    getchar();
 
     printf(" ...fim do Processo 2.\n\n");
     printf("A classe do Jogador 2 e: %d", a);
+
     return (0);
  }
 
