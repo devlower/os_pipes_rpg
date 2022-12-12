@@ -68,11 +68,12 @@ int main()
   {
     char class[10];
     char race[8];
-    int live_status;
+    float live_status;
     // int power_bar;
   } Player_attr;
 
   int attack_move(Attack player_attack[10]);
+  float defense_move(int damage);
 
   // populating data
 
@@ -211,13 +212,14 @@ Attack warrior_deck[10];
   int damage;
 
   Player_attr player_1;
-  strcpy(player_1.race, races_opt[player_race_index]);
-  strcpy(player_1.class, classes_opt[player_class_index]);
+  strcpy(player_1.race, races_opt[player_race_index - 1]);
+  strcpy(player_1.class, classes_opt[player_class_index - 1]);
   player_1.live_status = 100;
 
-printf("race: %s\nclass: %s\nlife: %d", player_1.race, player_1.class, player_1.live_status);
+printf("race: %s\nclass: %s\nlife: %.2f", player_1.race, player_1.class, player_1.live_status);
 
-switch (player_class_index)
+while(player_1.live_status > 0) {
+  switch (player_class_index)
 {
 case 1:
   damage = attack_move(warrior_deck);
@@ -236,6 +238,17 @@ default:
 }
 
 printf("\n\nDamage: %d", damage);
+
+ float damage_took;
+
+ damage_took = defense_move(damage);
+
+ printf("You took %.2f of damage", damage_took);
+
+player_1.live_status -= damage_took;
+
+printf("Your life bar: %.2f", player_1.live_status);
+}
 
   return 0;
 }
@@ -261,7 +274,7 @@ void instructions() {
              " |   to attack your opponent. Based on how much Power you have.                  |\n"
              " |                                                                               |\n"
              " | - Your opponent will turn a d3 dice. If the result is:                        |\n |");
-print_yellow("     1 -> The defender will succesfully avoid your attack, not taking any       ");
+print_yellow("     1 -> The defender will succesfully avoid your attack, not taking any      ");
 print_blue("|\n |");
 print_yellow("          damage.                                                              ");
 print_blue("|\n |");
@@ -402,6 +415,36 @@ int player_customization_class() {
               print_red("Please insert a valid attack...\n\n");
               break;
       }
+    }
+ }
+
+ float defense_move(int damage_input) {
+
+    int lower = 1, upper = 3, d3_dice, damage;
+
+    damage = damage_input;
+
+    print_blue(" Press 'Enter' to roll your defense d3 dice:\n\n");
+    print_green(" 1) You avoid the attack\n");
+    print_yellow(" 2) You receive 50\% of the damage\n");
+    print_red(" 3) You receive full damage");
+
+    getchar();
+
+    srand(time(0));
+
+    d3_dice = (rand() % (upper - lower + 1)) + lower;
+    printf("\n\nDice result: %d\n", d3_dice);
+
+    switch (d3_dice) {
+      case 1:
+        return 0;
+      case 2:
+        return damage * 0.5;
+      case 3:
+        return damage;
+      default:
+        break;
     }
  }
 
