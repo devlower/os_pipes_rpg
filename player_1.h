@@ -1,7 +1,6 @@
 typedef struct pipe_variables {
-int temp;
-int damage;
-int end_game;
+    int damage;
+    int end_game;
 } Pipe_variables;
 
 typedef struct player_attr
@@ -9,7 +8,6 @@ typedef struct player_attr
     char player_class[10];
     char race[8];
     float live_status;
-    // int power_bar;
   } Player_attr;
 
 char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
@@ -17,11 +15,10 @@ char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
 
 int player_1(int readfd, int writefd) {
 
- int end_game = 0;
+    int end_game = 0;
+    Pipe_variables var_pipes = {0, 0, 0};
 
-  Pipe_variables var_pipes = {0, 0, 0};
-
-  Attack_arr deck;
+    Attack_arr deck;
 
     system("clear");
 
@@ -47,23 +44,21 @@ int player_1(int readfd, int writefd) {
     Player_attr player_1;
     strcpy(player_1.race, races_opt[player_race_index - 1]);
     strcpy(player_1.player_class, classes_opt[player_class_index - 1]);
-    player_1.live_status = 100;
+    player_1.live_status = 50;
 
-    deck = selected_deck(player_class_index);
+    system("clear");
 
     while(player_1.live_status > 0 || end_game == 1) {
 
     system("clear");
 
+    deck = selected_deck(player_class_index);
+
     print_green("\n Process 1: Player 1 - Attack time!\n\n");
 
-    printf("\n\n Player 1 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f\n\n", player_1.race, player_1.player_class, player_1.live_status);
+    printf("\n\n Player 1 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_1.race, player_1.player_class, player_1.live_status);
 
     damage = attack_move(deck);
-
-    printf("\n\n Damage: %d", damage);
-
-    getchar();
 
     var_pipes.damage = damage;
 
@@ -72,12 +67,11 @@ int player_1(int readfd, int writefd) {
     read(readfd, &var_pipes, sizeof(var_pipes));
 
     end_game = var_pipes.end_game;
+    damage = var_pipes.damage;
 
     if(end_game == 1) {
-        continue;
+        break;
       }
-
-      system("clear");
 
       print_green("\n Process 1: Player 1 - Defense time!\n\n");
 
@@ -103,11 +97,13 @@ int player_1(int readfd, int writefd) {
       }
     }
 
+    system("clear");
+
     if(player_1.live_status > 0) {
-      printf("\n\n PLAYER 1 WIN");
+      print_green("\n\n ***************** PLAYER 1 WIN ***************** ");
     }
 
-  printf(" ...fim do Processo 1\n\n");
+    print_green("\n\n ...fim do Processo 1\n\n");
 
-  return(0);
+    return(0);
   }

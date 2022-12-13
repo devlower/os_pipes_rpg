@@ -1,13 +1,11 @@
 int player_customization_race() {
   int opt, valid_option = 1;
 
-  //system("clear");
   print_blue(" Choose your race by its number:\n\n"
              " 1) Human\n"
              " 2) Elf\n"
              " 3) Dwarf\n\n");
 
-  //fflush(stdout);
   while(valid_option) {
     printf(" Your choice: ");
     scanf("%d", &opt);

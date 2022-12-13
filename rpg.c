@@ -48,15 +48,12 @@ void print_red(char *s);
 void print_white(char *s);
 void print_cyan(char *s);
 
-  int attack_move(Attack_arr player_attack);
-  float defense_move(int damage);
-  int player_1(int readfd, int writefd);
-  int player_2(int readfd, int writefd);
+int attack_move(Attack_arr player_attack);
+float defense_move(int damage);
+int player_1(int readfd, int writefd);
+int player_2(int readfd, int writefd);
 
-int main()
-{
-
-  //system("clear");
+int main() {
 
   void instructions();
   int player_customization_race();
@@ -68,18 +65,17 @@ int main()
       pipe1[2],  // comunicação, pai -> filho jogador1
       pipe2[2];  // comunicação, filho -> pai  jodagor2
 
-
+  print_blue("Press 'Enter' to entry the game...\n");
   getchar();
-
+  system("clear");
 
   instructions();
 
 
-  if (pipe(pipe1) < 0 || pipe(pipe2) < 0)
-	{
-		print_red("\nrpg.c: Erro na chamada do pipe");
-		printf("\nerror: pipe1 = %d pipe2 = %d", pipe(pipe1), pipe(pipe2));
-		exit(0);
+  if (pipe(pipe1) < 0 || pipe(pipe2) < 0) {
+    print_red("\nrpg.c: Erro na chamada do pipe");
+    printf("\nerror: pipe1 = %d pipe2 = %d", pipe(pipe1), pipe(pipe2));
+    exit(0);
 	}
 
   if((descriptor = fork()) < 0) {
@@ -107,12 +103,10 @@ int main()
     close(pipe1[0]); // fecha leitura no pipe1
     close(pipe2[1]); // fecha escrita no pipe1
 
+  }
 
     fflush(stdout);
-    printf("Teve bom!");
     getchar();
-
-  }
 
   return 0;
 }

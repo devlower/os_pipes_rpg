@@ -13,7 +13,7 @@ void instructions() {
              " | - Each one of you will receive a special deck with 10 power cards related     |\n"
              " |   with the class you choosed.                                                 |\n"
              " |                                                                               |\n"
-             " | - Both of players have initial 100 points of Life and 100 points of Power.    |\n"
+             " | - Both of players have initial 50 points of Life and 100 points of Power.     |\n"
              " |                                                                               |\n"
              " | - On your turn you will have to choose between 3 randomly cards of your deck  |\n"
              " |   to attack your opponent. Based on how much Power you have.                  |\n"
@@ -33,8 +33,7 @@ print_blue("|\n"
              " | - Win who kills the opponent first!                                           |\n"
              " ---------------------------------------------------------------------------------\n");
 
- print_green("\n\nPress any key to continue...\n");
+ print_green("\n\nPress 'Enter' to continue...\n");
 
   getchar();
-  fflush(stdout);
 }

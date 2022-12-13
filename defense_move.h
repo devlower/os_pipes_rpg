@@ -9,9 +9,8 @@
     print_blue(" Press 'Enter' to roll your defense d3 dice:\n\n");
     print_green(" 1) You avoid the attack\n");
     print_yellow(" 2) You receive 50\% of the damage\n");
-    print_red(" 3) You receive full damage");
+    print_red(" 3) You receive full damage\n");
 
-    getchar();
     getchar();
 
     srand(time(0));
