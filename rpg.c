@@ -2,7 +2,8 @@
  * Description:
  *      The following program takes the conception of pipes to communicate between 2
  *      process and also calls a thread during execution time.
- *      Project developed for the Operational Systems for the Computer Science degree
+ *
+ *      Project developed for the Operational Systems for the Computer Science degree.
  *
  * Autors:
  *      Tuanne Assenço - tuanne.assenco@gmail.com

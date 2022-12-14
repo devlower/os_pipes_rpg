@@ -1,3 +1,7 @@
+/**
+*   This function prints the game instructions for the players
+**/
+
 void instructions() {
 
   print_blue(" ---------------------------------------------------------------------------------\n |");
@@ -13,7 +17,10 @@ void instructions() {
              " | - Each one of you will receive a special deck with 10 power cards related     |\n"
              " |   with the class you choosed.                                                 |\n"
              " |                                                                               |\n"
-             " | - Both of players have initial 50 points of Life and 100 points of Power.     |\n"
+             " | - Both of players have initial 50 points of Life.                             |\n"
+             " |                                                                               |\n"
+             " | - When your life is equal or less than 25% a thread will send you a           |\n"
+             " |   motivational message personalized by the class you chose.                   |\n"
              " |                                                                               |\n"
              " | - On your turn you will have to choose between 3 randomly cards of your deck  |\n"
              " |   to attack your opponent. Based on how much Power you have.                  |\n"

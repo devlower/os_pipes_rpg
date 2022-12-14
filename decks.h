@@ -2,7 +2,6 @@ typedef struct attack
   {
     char attack_name[20];
     char description[200];
-    int attack_pwr;
   } Attack;
 
   typedef struct attack_arr {
@@ -61,22 +60,17 @@ typedef struct attack
     cleric_deck.attack_cards[8] = (Attack){.attack_name = "Judgment", .attack_pwr = 8, .description = "The cleric pronounces judgment on the enemy, dealing extra damage to evil enemies and reducing the damage they can deal to the cleric and their allies."};
     cleric_deck.attack_cards[9] = (Attack){.attack_name = "Resurrection", .attack_pwr = 15, .description = "The cleric brings a fallen ally back to life, restoring them to full health and allowing them to continue fighting."};
 
-    switch (player_class_index)
-    {
-    case 1:
-      return warrior_deck;
-      break;
-    case 2:
-      return mage_deck;
-      break;
-    case 3:
-      return assassin_deck;
-      break;
-    case 4:
-      return cleric_deck;
-      break;
-    default:
-      break;
+    switch (player_class_index) {
+        case 1:
+            return warrior_deck;
+        case 2:
+            return mage_deck;
+        case 3:
+            return assassin_deck;
+        case 4:
+            return cleric_deck;
+        default:
+            break;
     }
   }
 

@@ -1,24 +1,22 @@
-//
 int player_2(int readfd, int writefd) {
 
-    int end_game = 0;
-    Pipe_variables var_pipes_2 = {0, 0, 0};
+    int end_game = 0, damage, player_race_index, player_class_index;
+
+    Pipe_variables var_pipes_2 = {0, 0};
     Attack_arr deck;
 
     read(readfd, &var_pipes_2, sizeof(var_pipes_2));
-
-    int damage;
 
     system("clear");
 
     print_green("\n Process 2: Player 2 Customization - Race\n\n");
 
-    int player_race_index = player_customization_race();
+    player_race_index = player_customization_race();
     getchar();
 
     system("clear");
     print_green("\n Process 2: Player 2 Customization - Class\n\n");
-    int player_class_index = player_customization_class();
+    player_class_index = player_customization_class();
     getchar();
 
     Player_attr player_2;
