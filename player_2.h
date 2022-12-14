@@ -1,3 +1,4 @@
+//
 int player_2(int readfd, int writefd) {
 
     int end_game = 0;
@@ -55,11 +56,22 @@ int player_2(int readfd, int writefd) {
 
       player_2.live_status -= damage_took;
 
+      if(player_2.live_status <= 12.5 && player_1.live_status > 0) {
+        pthread_t thread;
+
+        // Create the thread
+        pthread_create(&thread, NULL, motivation_message, (void*)player_2.player_class);
+
+        // Wait for the thread to finish
+        pthread_join(thread, NULL);
+
+      }
+
       printf("\n\n Player 2 life bar: %.2f", player_2.live_status);
 
       getchar();
 
-      if (player_2.live_status < 0){
+      if (player_2.live_status <= 0){
         var_pipes_2.end_game = 1;
         var_pipes_2.damage = 0;
         write(writefd, &var_pipes_2, sizeof(var_pipes_2));
@@ -88,7 +100,7 @@ int player_2(int readfd, int writefd) {
         print_green("\n\n *****************  PLAYER 2 WIN! ***************** \n\n");
     }
 
-    print_green("\n\n ...fim do Processo 2.\n\n");
+    print_green("\n\n ...end of process 2.\n\n");
 
     return (0);
  }

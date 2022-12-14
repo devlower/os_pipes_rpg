@@ -1,8 +1,10 @@
+// Variable struc declaration for data to be exchange between processess
 typedef struct pipe_variables {
     int damage;
     int end_game;
 } Pipe_variables;
 
+// Variable struc declaration for the player attributes structure
 typedef struct player_attr
   {
     char player_class[10];
@@ -10,15 +12,17 @@ typedef struct player_attr
     float live_status;
   } Player_attr;
 
+// Variables declarations and initial data for 'classes options', 'race options' and thread declation
 char classes_opt[4][10] = {"Warrior", "Mage", "Assassin", "Cleric"};
 char races_opt[3][8] = {"Human", "Elf", "Dwarf"};
+void *motivation_message(void *arg);
 
+// Escope of Player_1 function
 int player_1(int readfd, int writefd) {
 
-    int end_game = 0;
-    Pipe_variables var_pipes = {0, 0, 0};
-
-    Attack_arr deck;
+    int end_game = 0;                   // Control variable for the end of game (commuticated via pipes between proccess)
+    Pipe_variables var_pipes = {0, 0};  // Pipe initial variables for communication between processes
+    Attack_arr deck;                    //
 
     system("clear");
 
@@ -32,8 +36,6 @@ int player_1(int readfd, int writefd) {
 
     int player_class_index = player_customization_class();
     getchar();
-
-    var_pipes.temp = 1;
 
     write(writefd, &var_pipes, sizeof(var_pipes));
 
@@ -85,11 +87,22 @@ int player_1(int readfd, int writefd) {
 
       player_1.live_status -= damage_took;
 
+      if(player_1.live_status <= 12.5 && player_1.live_status > 0) {
+        pthread_t thread;
+
+        // Create the thread
+        pthread_create(&thread, NULL, motivation_message, (void*)player_1.player_class);
+
+        // Wait for the thread to finish
+        pthread_join(thread, NULL);
+
+      }
+
       printf("\n\n Life bar: %.2f", player_1.live_status);
 
       getchar();
 
-      if (player_1.live_status < 0){
+      if (player_1.live_status <= 0){
         var_pipes.end_game = 1;
         var_pipes.damage = 0;
         write(writefd, &var_pipes, sizeof(var_pipes));
@@ -103,7 +116,7 @@ int player_1(int readfd, int writefd) {
       print_green("\n\n ***************** PLAYER 1 WIN ***************** ");
     }
 
-    print_green("\n\n ...fim do Processo 1\n\n");
+    print_green("\n\n ...end of process 1.\n\n");
 
     return(0);
   }
