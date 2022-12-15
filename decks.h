@@ -1,17 +1,29 @@
+/**
+*   This code defines a struct for an attack card, which contains the name of the attack, its power, and a description.
+*   It also defines a struct for an array of attack cards, and a function for selecting a deck of attack cards based
+*   on the player's class. The function has a switch statement that returns a different deck of attack cards for each
+*   class (warrior, mage, assassin, cleric). The decks of attack cards are defined in the code as well.
+**/
+
+// Define a struct for an attack card
 typedef struct attack
   {
-    char attack_name[20];
-    char description[200];
+    char attack_name[20];   // Attack name
+    int attack_pwr;         // Attack power
+    char description[200];  // Description of the attack
   } Attack;
 
-  typedef struct attack_arr {
-    Attack attack_cards[10];
-  } Attack_arr;
+// Define a struct for an array of attack cards
+typedef struct attack_arr {
+Attack attack_cards[10];
+} Attack_arr;
 
- Attack_arr selected_deck(int deck_index) {
+// Define a function for selecting a deck of attack cards
+Attack_arr selected_deck(int deck_index) {
 
  int player_class_index = deck_index;
 
+    // Define a deck of attack cards for a Warrior
     Attack_arr warrior_deck;
     warrior_deck.attack_cards[0] = (Attack){.attack_name = "Thundering Strike", .attack_pwr = 10, .description = "A powerful attack that causes the ground to shake and the air to crackle with electricity."};
     warrior_deck.attack_cards[1] = (Attack){.attack_name = "Mighty Blow", .attack_pwr = 13, .description = "An incredibly strong attack that deals massive damage to the enemy."};
@@ -24,6 +36,7 @@ typedef struct attack
     warrior_deck.attack_cards[8] = (Attack){.attack_name = "Taunt", .attack_pwr = 8, .description = "The warrior taunts the enemy, drawing their attention and aggression onto themselves."};
     warrior_deck.attack_cards[9] = (Attack){.attack_name = "Shield Wall", .attack_pwr = 15, .description = "The warrior raises their shield, forming a barrier that protects them and their allies from enemy attacks."};
 
+    // Define a deck of attack cards for a Mage
     Attack_arr mage_deck;
     mage_deck.attack_cards[0] = (Attack){.attack_name = "Fireball", .attack_pwr = 10, .description = "The mage summons a ball of flame and hurls it at the enemy, causing burning damage."};
     mage_deck.attack_cards[1] = (Attack){.attack_name = "Frost Bolt", .attack_pwr = 13, .description = "The mage shoots a bolt of ice at the enemy, freezing them in place and dealing frost damage."};
@@ -36,6 +49,7 @@ typedef struct attack
     mage_deck.attack_cards[8] = (Attack){.attack_name = "Mana Drain", .attack_pwr = 8, .description = "The mage drains the enemy's magical energy, weakening their spells and abilities."};
     mage_deck.attack_cards[9] = (Attack){.attack_name = "Arcane Barrier", .attack_pwr = 15, .description = "The mage creates a barrier of arcane energy that protects them and their allies from incoming attacks."};
 
+    // Define a deck of attack cards for a Assassin
     Attack_arr assassin_deck;
     assassin_deck.attack_cards[0] = (Attack){.attack_name = "Venom Strike", .attack_pwr = 10, .description = "The assassin coats their blade with poison and strikes the enemy, dealing damage over time."};
     assassin_deck.attack_cards[1] = (Attack){.attack_name = "Shadow Step", .attack_pwr = 13, .description = "The assassin disappears into the shadows and reappears behind the enemy, surprising them and allowing the assassin to get in a quick attack."};
@@ -48,6 +62,7 @@ typedef struct attack
     assassin_deck.attack_cards[8] = (Attack){.attack_name = "Crippling Blow", .attack_pwr = 8, .description = "The assassin strikes a vital spot on the enemy's body, weakening them and making them easier to defeat."};
     assassin_deck.attack_cards[9] = (Attack){.attack_name = "Assassin's Mark", .attack_pwr = 15, .description = "The assassin marks the enemy, allowing the assassin and their allies to track the enemy and deal extra damage to them."};
 
+    // Define a deck of attack cards for a Cleric
     Attack_arr cleric_deck;
     cleric_deck.attack_cards[0] = (Attack){.attack_name = "Healing Word", .attack_pwr = 10, .description = "The cleric utters a word of divine power that heals the wounds of an ally."};
     cleric_deck.attack_cards[1] = (Attack){.attack_name = "Bless", .attack_pwr = 13, .description = "The cleric blesses an ally, increasing their defenses and making them more resistant to damage."};
@@ -60,15 +75,16 @@ typedef struct attack
     cleric_deck.attack_cards[8] = (Attack){.attack_name = "Judgment", .attack_pwr = 8, .description = "The cleric pronounces judgment on the enemy, dealing extra damage to evil enemies and reducing the damage they can deal to the cleric and their allies."};
     cleric_deck.attack_cards[9] = (Attack){.attack_name = "Resurrection", .attack_pwr = 15, .description = "The cleric brings a fallen ally back to life, restoring them to full health and allowing them to continue fighting."};
 
+
     switch (player_class_index) {
         case 1:
-            return warrior_deck;
+            return warrior_deck;    // Return the warrior deck if the player's class is warrior
         case 2:
-            return mage_deck;
+            return mage_deck;       // Return the warrior deck if the player's class is mage
         case 3:
-            return assassin_deck;
+            return assassin_deck;   // Return the warrior deck if the player's class is assassin
         case 4:
-            return cleric_deck;
+            return cleric_deck;     // Return the warrior deck if the player's class is cleric
         default:
             break;
     }
