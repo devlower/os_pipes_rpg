@@ -18,7 +18,7 @@ typedef struct player_attr
   {
     char player_class[10];
     char race[8];
-    float live_status;
+    float life_status;
   } Player_attr;
 
 // Define arrays for the available class and race options
@@ -70,12 +70,12 @@ int player_1(int readfd, int writefd) {
     strcpy(player_1.player_class, classes_opt[player_class_index - 1]);
 
     // Set the player's initial life points
-    player_1.live_status = 50;
+    player_1.life_status = 50;
 
     system("clear");
 
     // Loop until either player's life points reach 0 or the end_game flag is set
-    while(player_1.live_status > 0 || end_game == 1) {
+    while(player_1.life_status > 0 || end_game == 1) {
 
     system("clear");
 
@@ -86,7 +86,7 @@ int player_1(int readfd, int writefd) {
     print_green("\n Process 1: Player 1 - Attack time!\n\n");
 
     // Print the player's attributes
-    printf("\n\n Player 1 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_1.race, player_1.player_class, player_1.live_status);
+    printf("\n\n Player 1 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_1.race, player_1.player_class, player_1.life_status);
 
     // Allow the player to choose and perform an attack move
     damage = attack_move(deck);
@@ -115,7 +115,7 @@ int player_1(int readfd, int writefd) {
       float damage_took;
 
       // Print the player's attributes
-      printf("Player 1 Attributs:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f\n\n", player_1.race, player_1.player_class, player_1.live_status);
+      printf("Player 1 Attributs:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f\n\n", player_1.race, player_1.player_class, player_1.life_status);
 
       // Allow the player to choose and perform a defense move
       damage_took = defense_move(damage);
@@ -124,10 +124,10 @@ int player_1(int readfd, int writefd) {
       printf("\n\n Player 1 took %.2f of damage", damage_took);
 
       // Reduce the player's life points by the amount of damage taken
-      player_1.live_status -= damage_took;
+      player_1.life_status -= damage_took;
 
       // If the player's life points are low, print a motivational message
-      if(player_1.live_status <= 12.5 && player_1.live_status > 0) {
+      if(player_1.life_status <= 12.5 && player_1.life_status > 0) {
 
         // Create a new thread for printing the motivational message
         pthread_t thread;
@@ -141,14 +141,14 @@ int player_1(int readfd, int writefd) {
       }
 
       // Print the player's current life points
-      printf("\n\n Life bar: %.2f", player_1.live_status);
+      printf("\n\n Life bar: %.2f", player_1.life_status);
 
       // Consume the newline character left in the input buffer
       getchar();
 
       // If the player's life points have reached 0, set the end_game flag
       // and write the updated values of the pipe variables to the pipe
-      if (player_1.live_status <= 0){
+      if (player_1.life_status <= 0){
         var_pipes.end_game = 1;
         var_pipes.damage = 0;
         write(writefd, &var_pipes, sizeof(var_pipes));
@@ -159,7 +159,7 @@ int player_1(int readfd, int writefd) {
     system("clear");
 
     // If player 1's life points are greater than 0, print a win message
-    if(player_1.live_status > 0) {
+    if(player_1.life_status > 0) {
       print_green("\n\n ***************** PLAYER 1 WIN ***************** ");
     }
 

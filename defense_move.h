@@ -1,7 +1,7 @@
-/**
+/** 
 *   This function returns the amount of damage that the player receives from an attack.
 *   It takes in the initial amount of damage as input.
-**/
+**/ 
 
 float defense_move(int damage_input) {
 
@@ -39,6 +39,6 @@ float defense_move(int damage_input) {
       default:
         break;
     }
-    // Wait for user to press enter
+
     getchar();
  }

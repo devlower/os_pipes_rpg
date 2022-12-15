@@ -54,13 +54,13 @@ int player_2(int readfd, int writefd) {
     strcpy(player_2.player_class, classes_opt[player_class_index - 1]);
 
     // initialize player 2's life status to 50
-    player_2.live_status = 50;
+    player_2.life_status = 50;
 
     // write the variables in var_pipes_2 to the pipe
     write(writefd, &var_pipes_2, sizeof(var_pipes_2));
 
     // keep executing the loop while player 2's life status is greater than 0 and the game has not ended
-    while(player_2.live_status > 0 || end_game == 1){
+    while(player_2.life_status > 0 || end_game == 1){
 
         // read from the pipe the variables stored in var_pipes_2
         read(readfd, &var_pipes_2, sizeof(var_pipes_2));
@@ -91,7 +91,7 @@ int player_2(int readfd, int writefd) {
         float damage_took;
 
         // print player 2's attributes
-        printf("\n\n Player 2 Attributs:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f\n\n", player_2.race, player_2.player_class, player_2.live_status);
+        printf("\n\n Player 2 Attributs:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f\n\n", player_2.race, player_2.player_class, player_2.life_status);
 
         // call the defense_move function to calculate the amount of damage taken
         damage_took = defense_move(damage);
@@ -100,10 +100,10 @@ int player_2(int readfd, int writefd) {
         printf(" You took %.2f of damage", damage_took);
 
         // subtract the damage taken from player 2's life status
-        player_2.live_status -= damage_took;
+        player_2.life_status -= damage_took;
 
         // if player 2's life status is less than or equal to 12.5, print a motivational message
-        if(player_2.live_status <= 12.5 && player_2.live_status > 0) {
+        if(player_2.life_status <= 12.5 && player_2.life_status > 0) {
         // create a pthread object to handle the motivational message
         pthread_t thread;
 
@@ -116,13 +116,13 @@ int player_2(int readfd, int writefd) {
         }
 
     // print player 2's life status
-    printf("\n\n Player 2 life bar: %.2f", player_2.live_status);
+    printf("\n\n Player 2 life bar: %.2f", player_2.life_status);
 
     // wait for user to press enter
     getchar();
 
     // if player 2's life status is less than or equal to 0, end the game
-    if (player_2.live_status <= 0){
+    if (player_2.life_status <= 0){
 
         // set the end_game variable to 1
         var_pipes_2.end_game = 1;
@@ -144,7 +144,7 @@ int player_2(int readfd, int writefd) {
     print_green("\n Process 2: Player 2 - Attack time!\n\n");
 
     // print player 2's attributes
-    printf("\n\n Player 2 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_2.race, player_2.player_class, player_2.live_status);
+    printf("\n\n Player 2 Attributes:\n\n\tRace: %s\n\tClass: %s\n\tLife Status: %.2f", player_2.race, player_2.player_class, player_2.life_status);
 
     // call the attack_move function to calculate the amount of damage to be dealt
     damage = attack_move(deck);
@@ -165,7 +165,7 @@ int player_2(int readfd, int writefd) {
     system("clear");
 
     // if player 2's life status is greater than 0, print a message that player 2 has won the game
-    if(player_2.live_status > 0) {
+    if(player_2.life_status > 0) {
         // print a message in green text
         print_green("\n\n ***************** PLAYER 2 WIN! ***************** \n\n");
     }

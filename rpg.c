@@ -72,6 +72,8 @@ int descriptor,
     pipe1[2], // array of size 2 to store 2 file descriptors for pipe 1
     pipe2[2]; // array of size 2 to store 2 file descriptors for pipe 2
 
+system("clear");
+
 // Print blue text and prompt user to press enter to enter the game
 print_blue("Press 'Enter' to entry the game...\n");
 getchar();
