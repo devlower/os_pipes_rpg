@@ -14,24 +14,25 @@
  **/
 
 // Inclusion of libraries necessary for the operation of the program
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
-#include <pthread.h>
-#include "instructions.h"
-#include "player_cutomization_race.h"
-#include "player_customization_class.h"
-#include "decks.h"
-#include "attack_move.h"
-#include "defense_move.h"
-#include "player_1.h"
-#include "player_2.h"
-#include "print_colors.h"
-#include "motivation_message.h"
+#include <stdio.h>                      // For standard input/output functions
+#include <stdlib.h>                     // For standard library functions
+#include <string.h>                     // For string manipulation functions
+#include <time.h>                       // For time-related functions
+#include <unistd.h>                     // For POSIX-standard functions
+#include <pthread.h>                    // For thread-related functions
+#include "instructions.h"               // For instructions-related functions
+#include "player_customization_race.h"  // For player customization race-related functions
+#include "player_customization_class.h" // For player customization class-related functions
+#include "decks.h"                      // For deck-related functions
+#include "attack_move.h"                // For attack move-related functions
+#include "defense_move.h"               // For defense move-related functions
+#include "player_1.h"                   // For player 1-related functions
+#include "player_2.h"                   // For player 2-related functions
+#include "print_colors.h"               // For print color-related functions
+#include "motivation_message.h"         // For motivation message-related functions
 
-// Verifies the Operational System to override 'Screen Cleaning', 'Buffer' and 'Sleep' functions
+// This code defines macros for cleaning the input buffer, clearing the screen, and sleeping for 1 second,
+// depending on the compiler being used.
 #if defined(__MINGW32__) || defined(_MSC_VER)
 #define clean_input() fflush(stdin)
 #define clear_screen() system("cls")
@@ -60,64 +61,83 @@ int player_1(int readfd, int writefd);
 int player_2(int readfd, int writefd);
 
 int main() {
+// Declarations of functions
+void instructions();
+int player_customization_race();
+int player_customization_class();
+Attack_arr selected_deck(int deck_index);
 
-    // Local functions declaration of 'game instructions', 'race customization', 'class customization' and 'attack array'
-    void instructions();
-    int player_customization_race();
-    int player_customization_class();
-    Attack_arr selected_deck(int deck_index);
+// Variables
+int descriptor,
+    pipe1[2], // array of size 2 to store 2 file descriptors for pipe 1
+    pipe2[2]; // array of size 2 to store 2 file descriptors for pipe 2
 
+// Print blue text and prompt user to press enter to enter the game
+print_blue("Press 'Enter' to entry the game...\n");
+getchar();
 
-    int descriptor,   // Used to create child process by fork
-        pipe1[2],     // Communication, parent -> child: Player1
-        pipe2[2];     // Communication, child -> parent: Player2
+// Clear the terminal screen
+system("clear");
 
-    // Start of the Game
-    print_blue("Press 'Enter' to entry the game...\n");
-    getchar();
-    system("clear");
+// Call the instructions function
+instructions();
 
-    // Print out game instructions
-    instructions();
+// Create two pipes for communication between player 1 and player 2
+if (pipe(pipe1) < 0 || pipe(pipe2) < 0) {
 
+    // Print error message if pipe call fails
+    print_red("\nrpg.c: Pipe call error");
+    printf("\nerror: pipe1 = %d pipe2 = %d", pipe(pipe1), pipe(pipe2));
 
-    // Checks if an error occur in Pipe call
-    if (pipe(pipe1) < 0 || pipe(pipe2) < 0) {
+    // Exit the program
+    exit(0);
+}
 
-        print_red("\nrpg.c: Pipe call error");
-        printf("\nerror: pipe1 = %d pipe2 = %d", pipe(pipe1), pipe(pipe2));
+// Create a child process
+if((descriptor = fork()) < 0) {
 
-        exit(0);
-	}
+    // Print error message if fork call fails
+    print_red("Error: Call FORK()");
 
-	// Checks if there was an error in the fork() call
-    if((descriptor = fork()) < 0) {
+    // Exit the program
+    exit(0);
+}
 
-        print_red("Error: Call FORK()");
+// If the descriptor is greater than 0, it is the parent process
+else if(descriptor > 0) {
 
-        exit(0);
-    } else if(descriptor > 0) {     // Parent process
+    // Close the reading end of pipe1 and the writing end of pipe2
+    close(pipe1[0]);
+    close(pipe2[1]);
 
-        close(pipe1[0]);    // Close reading of pipe1
-        close(pipe2[1]);    // Close writing of pipe2
+    // Call player_1 function with the reading end of pipe2 and the writing end of pipe1
+    player_1(pipe2[0], pipe1[1]);
 
-        player_1(pipe2[0], pipe1[1]);
+    // Close the writing end of pipe1 and the reading end of pipe2
+    close(pipe1[1]);
+    close(pipe2[0]);
+}
 
-        close(pipe1[1]);    // Close writing of pipe1
-        close(pipe2[0]);    // Close reading of pipe2
-    } else {
+// If the descriptor is 0, it is the child process
+else {
 
-        close(pipe1[1]);    // Close writing of pipe1
-        close(pipe2[0]);    // Close reading of pipe2
+    // Close the writing end of pipe1 and the reading end of pipe2
+    close(pipe1[1]);
+    close(pipe2[0]);
 
-        player_2(pipe1[0], pipe2[1]);   // Child process
+    // Call player_2 function with the reading end of pipe1 and the writing end of pipe2
+    player_2(pipe1[0], pipe2[1]);
 
-        close(pipe1[0]); // Close reading of pipe1
-        close(pipe2[1]); // Close writing of pipe1
-  }
+    // Close the reading end of pipe1 and the writing end of pipe2
+    close(pipe1[0]);
+    close(pipe2[1]);
+}
 
-    fflush(stdout);     // Clean outputs
-    getchar();          // Await for the user press 'Enter' to close program
+// Flush the stdout buffer
+fflush(stdout);
 
-    return 0;
+// Prompt user to press enter to end the program
+getchar();
+
+return 0;
 }
